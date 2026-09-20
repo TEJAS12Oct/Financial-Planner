@@ -1,0 +1,13 @@
+.env
+.idea/
+.vscode/
+.DS_Store
+*.log
+logs/
+generated_reports/
+tmp/
+temp/
+*.pdf
+bin/
+dist/
+coverage.out

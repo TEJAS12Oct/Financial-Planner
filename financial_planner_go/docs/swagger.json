@@ -1,0 +1,1499 @@
+{
+    "schemes": [
+        "http",
+        "https"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "BoltPe-owned Financial Planner APIs. Requests are validated before the internal Planning Engine runs. Goal timeline validation is strict: Instant goals require 6-12 months, Short goals 1-5 years, and Long goals 20-25 years. The timeline text must use the correct unit and match the numeric months/years field. Policy Planner is not used at runtime.",
+        "title": "BoltPe Financial Planner API",
+        "contact": {},
+        "version": "1.2.0"
+    },
+    "basePath": "/",
+    "paths": {
+        "/api/boltpe-financial-planner/report": {
+            "post": {
+                "description": "Validates the request, runs the BoltPe-owned Planning Engine, persists the report and returns the report response. No Policy Planner/vendor call is used.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Reports"
+                ],
+                "summary": "Generate BoltPe financial planner report",
+                "operationId": "post_financial_planner_report",
+                "parameters": [
+                    {
+                        "description": "Financial planner request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.FinancialPlannerRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.GenerateReportSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "VAL_001 - validation failed, including Goal Master and timeline rules",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIErrorResponse"
+                        }
+                    },
+                    "429": {
+                        "description": "Too Many Requests",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "BoltPe calculation, report generation, or storage error",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/boltpe-financial-planner/report-json": {
+            "post": {
+                "description": "Validates the request, creates the database audit row, runs the internal BoltPe Planning Engine, stores and returns structured JSON. After the JSON response is ready, PDF generation, S3 upload and email delivery continue in the background. Goal timeline validation is strict: Instant 6-12 Months; Short 1-5 Years; Long 20-25 Years; timeline text must match months/years. API-key and X-User-ID route validation are currently disabled in code.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Financial Planner Reports"
+                ],
+                "summary": "Generate structured BoltPe financial planner JSON",
+                "operationId": "generate_structured_financial_planner_json",
+                "parameters": [
+                    {
+                        "description": "Financial planner request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.FinancialPlannerRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Structured report generated successfully",
+                        "schema": {
+                            "$ref": "#/definitions/models.StructuredJSONReportResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "VAL_001 - request, customer, family, insurance, cashflow, goal key/label/type/timeline or assumption validation failed",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIErrorResponse"
+                        }
+                    },
+                    "413": {
+                        "description": "Request body exceeds the configured limit",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIErrorResponse"
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "BoltPe calculation, serialization, database, PDF-background setup, or internal processing error",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/boltpe-financial-planner/report-pdf-direct": {
+            "post": {
+                "description": "Validates the request, runs the same BoltPe Planning Engine and returns the PDF directly. This endpoint does not automatically send email.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/pdf"
+                ],
+                "tags": [
+                    "Reports"
+                ],
+                "summary": "Generate and download a financial planner PDF",
+                "operationId": "post_financial_planner_report_pdf_direct",
+                "parameters": [
+                    {
+                        "description": "Financial planner request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.FinancialPlannerRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "file"
+                        }
+                    },
+                    "400": {
+                        "description": "VAL_001 - validation failed, including Goal Master and timeline rules",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIErrorResponse"
+                        }
+                    },
+                    "429": {
+                        "description": "Too Many Requests",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "BoltPe calculation, persistence or PDF generation error",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/boltpe-financial-planner/reports": {
+            "get": {
+                "description": "Returns stored report metadata in descending creation order and refreshes signed report URLs where applicable. API-key/X-User-ID validation is currently disabled; current controller uses user ID 1.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Financial Planner Reports"
+                ],
+                "summary": "List stored financial planner reports",
+                "operationId": "list_financial_planner_reports",
+                "responses": {
+                    "200": {
+                        "description": "Reports fetched successfully",
+                        "schema": {
+                            "$ref": "#/definitions/FinancialPlanner.ListReportsResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Unable to fetch reports from the database",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIErrorResponse"
+                        }
+                    }
+                },
+                "parameters": []
+            }
+        },
+        "/api/boltpe-financial-planner/smtp-status": {
+            "get": {
+                "description": "Returns local BoltPe SMTP configuration status. Access is restricted by allowed-IP middleware.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Email"
+                ],
+                "summary": "Get email-service status",
+                "operationId": "get_financial_planner_smtp_status",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/FinancialPlanner.SMTPStatusResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "AUTH_403 - client IP is not allowed",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/boltpe-financial-planner/test-email": {
+            "post": {
+                "description": "Sends a test email directly through the configured BoltPe SMTP mailer. Access is restricted by allowed-IP middleware.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Email"
+                ],
+                "summary": "Send a test email",
+                "operationId": "post_financial_planner_test_email",
+                "parameters": [
+                    {
+                        "description": "Test email request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/FinancialPlanner.TestEmailRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/FinancialPlanner.TestEmailResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "AUTH_403 - client IP is not allowed",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "FP_EMAIL_001 - SMTP/email sending failed",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/boltpe-financial-planner/": {
+            "get": {
+                "description": "Returns the BoltPe Financial Planner application home page.",
+                "produces": [
+                    "text/html"
+                ],
+                "tags": [
+                    "Pages"
+                ],
+                "summary": "Render the Financial Planner home page",
+                "operationId": "get_financial_planner_home",
+                "responses": {
+                    "200": {
+                        "description": "HTML page",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/boltpe-financial-planner/health": {
+            "get": {
+                "description": "Returns the current BoltPe Financial Planner service status.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Pages"
+                ],
+                "summary": "Check Financial Planner service health",
+                "operationId": "get_financial_planner_health",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/routes.HealthResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/boltpe-financial-planner/reports/{reportPath}": {
+            "get": {
+                "description": "Serves a generated report through a signed and expiring URL.",
+                "produces": [
+                    "application/pdf"
+                ],
+                "tags": [
+                    "Reports"
+                ],
+                "summary": "Download or preview a generated report PDF",
+                "operationId": "get_financial_planner_report_file",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Generated report path, for example publictpap/report.pdf",
+                        "name": "reportPath",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "format": "int64",
+                        "description": "Signed URL expiry timestamp",
+                        "name": "expires",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Signed URL signature",
+                        "name": "signature",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "file"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Signed report URL missing, expired, invalid expiry, or invalid signature",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIErrorResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "FinancialPlanner.ListReportsResponse": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/FinancialPlanner.ReportListItem"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "FinancialPlanner.ReportListItem": {
+            "type": "object",
+            "properties": {
+                "contact": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "full_name": {
+                    "type": "string"
+                },
+                "report_id": {
+                    "type": "integer"
+                },
+                "report_pdf_url": {
+                    "type": "string"
+                },
+                "score_label": {
+                    "type": "string"
+                },
+                "score_value": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "FinancialPlanner.SMTPStatusData": {
+            "type": "object",
+            "properties": {
+                "configured": {
+                    "type": "boolean"
+                },
+                "host": {
+                    "type": "string"
+                },
+                "password_length_after_space_removal": {
+                    "type": "integer"
+                },
+                "password_set": {
+                    "type": "boolean"
+                },
+                "port": {
+                    "type": "integer"
+                },
+                "user": {
+                    "type": "string"
+                }
+            }
+        },
+        "FinancialPlanner.SMTPStatusResponse": {
+            "type": "object",
+            "properties": {
+                "smtp": {
+                    "$ref": "#/definitions/FinancialPlanner.SMTPStatusData"
+                },
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "FinancialPlanner.TestEmailRequest": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "sample.user@example.com"
+                },
+                "to_email": {
+                    "type": "string",
+                    "example": "sample.user@example.com"
+                }
+            }
+        },
+        "FinancialPlanner.TestEmailResponse": {
+            "type": "object",
+            "properties": {
+                "email_status": {
+                    "$ref": "#/definitions/FinancialPlanner.TestEmailStatusResponse"
+                },
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "FinancialPlanner.TestEmailStatusResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "sent": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "models.APIErrorResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "example": "VAL_001"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "invalid request payload"
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": false
+                }
+            }
+        },
+        "models.FinancialPlannerRequest": {
+            "type": "object",
+            "properties": {
+                "children_count": {
+                    "type": "integer",
+                    "example": 0,
+                    "description": "Required for Short, Long and Explorer flows; whole number >=0. Must be 0 for single customer and Instant-only flow."
+                },
+                "city": {
+                    "type": "string",
+                    "example": "Sample City",
+                    "description": "Required by product validation. 2-100 characters."
+                },
+                "contact": {
+                    "type": "string",
+                    "example": "9999999999",
+                    "description": "Required. Valid 10-digit Indian mobile number starting with 6-9."
+                },
+                "dependents": {
+                    "type": "integer",
+                    "example": 2,
+                    "description": "Whole number >=0. Required for Explorer flow; must be 0/empty for Instant-only flow."
+                },
+                "dob": {
+                    "type": "string",
+                    "example": "01/01/1990",
+                    "description": "Required. DD/MM/YYYY; calculated age must be 18-100."
+                },
+                "education_1_inflation": {
+                    "type": "number",
+                    "example": 6.0,
+                    "minimum": 0,
+                    "maximum": 20,
+                    "description": "Optional inflation assumption. Allowed range 0-20%."
+                },
+                "education_1_lumpsum_return": {
+                    "type": "number",
+                    "example": 10.0,
+                    "minimum": 0,
+                    "maximum": 50,
+                    "description": "Optional return assumption. Allowed range 0-50%."
+                },
+                "education_1_sip_return": {
+                    "type": "number",
+                    "example": 12.0,
+                    "minimum": 0,
+                    "maximum": 50,
+                    "description": "Optional return assumption. Allowed range 0-50%."
+                },
+                "education_1_target_age": {
+                    "type": "integer",
+                    "example": 18,
+                    "minimum": 0,
+                    "maximum": 100,
+                    "description": "Optional. 0/blank means omitted; otherwise whole number 1-100."
+                },
+                "email": {
+                    "type": "string",
+                    "example": "sample.user@example.com",
+                    "description": "Required. Valid email address."
+                },
+                "existing_critical": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no",
+                        "true",
+                        "false",
+                        "1",
+                        "0"
+                    ],
+                    "example": "yes",
+                    "description": "Insurance selection. Accepted: yes/no, true/false, 1/0. Not applicable for Instant-only flow."
+                },
+                "existing_critical_cover": {
+                    "type": "number",
+                    "example": 100000.0,
+                    "minimum": 0,
+                    "description": "Cover amount. Must be >0 when corresponding insurance flag is selected; otherwise 0. Not applicable for Instant-only flow."
+                },
+                "existing_health": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no",
+                        "true",
+                        "false",
+                        "1",
+                        "0"
+                    ],
+                    "example": "yes",
+                    "description": "Insurance selection. Accepted: yes/no, true/false, 1/0. Not applicable for Instant-only flow."
+                },
+                "existing_health_cover": {
+                    "type": "number",
+                    "example": 100000.0,
+                    "minimum": 0,
+                    "description": "Cover amount. Must be >0 when corresponding insurance flag is selected; otherwise 0. Not applicable for Instant-only flow."
+                },
+                "existing_life_term": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no",
+                        "true",
+                        "false",
+                        "1",
+                        "0"
+                    ],
+                    "example": "yes",
+                    "description": "Insurance selection. Accepted: yes/no, true/false, 1/0. Not applicable for Instant-only flow."
+                },
+                "existing_life_term_cover": {
+                    "type": "number",
+                    "example": 10000000.0,
+                    "minimum": 0,
+                    "description": "Cover amount. Must be >0 when corresponding insurance flag is selected; otherwise 0. Not applicable for Instant-only flow."
+                },
+                "existing_personal": {
+                    "type": "string",
+                    "enum": [
+                        "yes",
+                        "no",
+                        "true",
+                        "false",
+                        "1",
+                        "0"
+                    ],
+                    "example": "yes",
+                    "description": "Insurance selection. Accepted: yes/no, true/false, 1/0. Not applicable for Instant-only flow."
+                },
+                "existing_personal_cover": {
+                    "type": "number",
+                    "example": 80000.0,
+                    "minimum": 0,
+                    "description": "Cover amount. Must be >0 when corresponding insurance flag is selected; otherwise 0. Not applicable for Instant-only flow."
+                },
+                "full_name": {
+                    "type": "string",
+                    "example": "Sample User",
+                    "description": "Required. 3-100 characters; letters, spaces, apostrophes, dots and hyphens only."
+                },
+                "generic_goal_inflation": {
+                    "type": "number",
+                    "example": 6.0,
+                    "minimum": 0,
+                    "maximum": 20,
+                    "description": "Optional inflation assumption. Allowed range 0-20%."
+                },
+                "generic_goal_lumpsum_return": {
+                    "type": "number",
+                    "example": 10.0,
+                    "minimum": 0,
+                    "maximum": 50,
+                    "description": "Optional return assumption. Allowed range 0-50%."
+                },
+                "generic_goal_sip_return": {
+                    "type": "number",
+                    "example": 12.0,
+                    "minimum": 0,
+                    "maximum": 50,
+                    "description": "Optional return assumption. Allowed range 0-50%."
+                },
+                "investment_experience": {
+                    "type": "string",
+                    "example": "Intermediate",
+                    "enum": [
+                        "Beginner",
+                        "Intermediate",
+                        "Advance"
+                    ],
+                    "description": "Required. Case-insensitive: Beginner, Intermediate, Advance."
+                },
+                "marital_status": {
+                    "type": "string",
+                    "example": "single",
+                    "description": "Required for Short, Long and Explorer flows. Allowed: single, married. Must be empty for Instant-only flow."
+                },
+                "marriage_1_inflation": {
+                    "type": "number",
+                    "example": 6.0,
+                    "minimum": 0,
+                    "maximum": 20,
+                    "description": "Optional inflation assumption. Allowed range 0-20%."
+                },
+                "marriage_1_lumpsum_return": {
+                    "type": "number",
+                    "example": 10.0,
+                    "minimum": 0,
+                    "maximum": 50,
+                    "description": "Optional return assumption. Allowed range 0-50%."
+                },
+                "marriage_1_sip_return": {
+                    "type": "number",
+                    "example": 12.0,
+                    "minimum": 0,
+                    "maximum": 50,
+                    "description": "Optional return assumption. Allowed range 0-50%."
+                },
+                "marriage_1_target_age": {
+                    "type": "integer",
+                    "example": 25,
+                    "minimum": 0,
+                    "maximum": 100,
+                    "description": "Optional. 0/blank means omitted; otherwise whole number 1-100."
+                },
+                "monthly_expenses": {
+                    "type": "number",
+                    "example": 30000.0,
+                    "description": "Required; numeric >=0, max 2 decimals, cannot exceed monthly_income."
+                },
+                "monthly_income": {
+                    "type": "number",
+                    "example": 100000.0,
+                    "description": "Required; numeric >0, maximum 2 decimal places."
+                },
+                "monthly_savings": {
+                    "type": "number",
+                    "example": 60000.0,
+                    "description": "Required; numeric >=0, max 2 decimals; expenses + savings cannot exceed monthly_income."
+                },
+                "retirement_inflation": {
+                    "type": "number",
+                    "example": 6.0,
+                    "minimum": 0,
+                    "maximum": 20,
+                    "description": "Optional inflation assumption. Allowed range 0-20%."
+                },
+                "retirement_post_return": {
+                    "type": "number",
+                    "example": 7.0,
+                    "minimum": 0,
+                    "maximum": 50,
+                    "description": "Optional return assumption. Allowed range 0-50%."
+                },
+                "retirement_pre_return": {
+                    "type": "number",
+                    "example": 12.0,
+                    "minimum": 0,
+                    "maximum": 50,
+                    "description": "Optional return assumption. Allowed range 0-50%."
+                },
+                "risk_appetite": {
+                    "type": "string",
+                    "example": "medium",
+                    "enum": [
+                        "low",
+                        "medium",
+                        "high"
+                    ],
+                    "description": "Required. Risk appetite used by the BoltPe allocation engine."
+                },
+                "selected_goals_json": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.SelectedGoalRequest"
+                    },
+                    "minItems": 1,
+                    "description": "Required. At least one goal. Each key must be unique and must match the BoltPe Goal Master key, label, type and timeline rules."
+                },
+                "spouse_dob": {
+                    "type": "string",
+                    "example": "15/06/1998",
+                    "description": "For married customers: required date in DD/MM/YYYY format. Calculated spouse age must be between 18 and 100. Must be empty when single."
+                },
+                "child_1_name": {
+                    "type": "string",
+                    "example": "Aarav",
+                    "description": "Optional child name when children_count is at least 1."
+                },
+                "child_1_dob": {
+                    "type": "string",
+                    "example": "05/08/2022",
+                    "description": "Optional child birthdate in DD/MM/YYYY format. Calculated age must be 0-25 and both parents must be at least 18 years older."
+                },
+                "child_2_name": {
+                    "type": "string",
+                    "example": "Anaya",
+                    "description": "Optional child name when children_count is at least 2."
+                },
+                "child_2_dob": {
+                    "type": "string",
+                    "example": "10/02/2024",
+                    "description": "Optional child birthdate in DD/MM/YYYY format. Calculated age must be 0-25 and both parents must be at least 18 years older."
+                },
+                "spouse_income": {
+                    "type": "number",
+                    "example": 0.0,
+                    "description": "For married customers: required numeric value >=0. Must be 0/empty when single."
+                },
+                "wealth_inflation": {
+                    "type": "number",
+                    "example": 6.0,
+                    "minimum": 0,
+                    "maximum": 20,
+                    "description": "Optional inflation assumption. Allowed range 0-20%."
+                },
+                "wealth_lumpsum_return": {
+                    "type": "number",
+                    "example": 10.0,
+                    "minimum": 0,
+                    "maximum": 50,
+                    "description": "Optional return assumption. Allowed range 0-50%."
+                },
+                "wealth_sip_return": {
+                    "type": "number",
+                    "example": 12.0,
+                    "minimum": 0,
+                    "maximum": 50,
+                    "description": "Optional return assumption. Allowed range 0-50%."
+                }
+            },
+            "required": [
+                "full_name",
+                "contact",
+                "email",
+                "dob",
+                "monthly_income",
+                "monthly_expenses",
+                "monthly_savings",
+                "risk_appetite",
+                "investment_experience",
+                "selected_goals_json"
+            ],
+            "example": {
+                "full_name": "Sample User",
+                "contact": "9876543210",
+                "email": "sample.user@example.com",
+                "dob": "15/01/1995",
+                "city": "Pune",
+                "marital_status": "married",
+                "spouse_dob": "15/06/1998",
+                "child_1_name": "Aarav",
+                "child_1_dob": "05/08/2022",
+                "spouse_income": 50000,
+                "children_count": 0,
+                "dependents": 0,
+                "monthly_income": 100000,
+                "monthly_expenses": 30000,
+                "monthly_savings": 40000,
+                "risk_appetite": "medium",
+                "investment_experience": "Intermediate",
+                "existing_life_term": "yes",
+                "existing_life_term_cover": 10000000,
+                "existing_health": "yes",
+                "existing_health_cover": 500000,
+                "existing_critical": "no",
+                "existing_critical_cover": 0,
+                "existing_personal": "no",
+                "existing_personal_cover": 0,
+                "selected_goals_json": [
+                    {
+                        "key": "bike",
+                        "label": "Bike",
+                        "type": "instant",
+                        "categoryTitle": "Instant Goals",
+                        "timeline": "12 Months",
+                        "amount": 150000,
+                        "years": 0,
+                        "months": 12,
+                        "customName": ""
+                    },
+                    {
+                        "key": "car_purchase",
+                        "label": "Car Purchase",
+                        "type": "short",
+                        "categoryTitle": "Short Term Goals",
+                        "timeline": "5 Years",
+                        "amount": 1000000,
+                        "years": 5,
+                        "months": 0,
+                        "customName": ""
+                    },
+                    {
+                        "key": "retirement",
+                        "label": "Retirement Planning",
+                        "type": "long",
+                        "categoryTitle": "Long Term Goals",
+                        "timeline": "25 Years",
+                        "amount": 20000000,
+                        "years": 25,
+                        "months": 0,
+                        "customName": ""
+                    }
+                ]
+            }
+        },
+        "models.GenerateReportSuccessResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/models.ReportDataResponse"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Financial planner report generated successfully"
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
+                }
+            }
+        },
+        "models.ReportCustomerResponse": {
+            "type": "object",
+            "properties": {
+                "age": {
+                    "type": "integer",
+                    "example": 36
+                },
+                "email": {
+                    "type": "string",
+                    "example": "ravi@example.com"
+                },
+                "full_name": {
+                    "type": "string",
+                    "example": "Ravi Sharma"
+                }
+            }
+        },
+        "models.ReportDataResponse": {
+            "type": "object",
+            "properties": {
+                "customer": {
+                    "$ref": "#/definitions/models.ReportCustomerResponse"
+                },
+                "email_status": {
+                    "$ref": "#/definitions/models.ReportEmailStatusResponse"
+                },
+                "pdf_status": {
+                    "$ref": "#/definitions/models.ReportPDFStatusResponse"
+                },
+                "report_id": {
+                    "type": "integer",
+                    "example": 101
+                },
+                "report_pdf_url": {
+                    "type": "string",
+                    "example": "/api/boltpe-financial-planner/reports/20260709_120000_Ravi_Sharma_AI_Finance_Report.pdf"
+                },
+                "score": {
+                    "$ref": "#/definitions/models.ReportScoreResponse"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "report_generated"
+                }
+            }
+        },
+        "models.ReportEmailStatusResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "Report email sent successfully to ravi@example.com."
+                },
+                "sent": {
+                    "type": "boolean",
+                    "example": true
+                }
+            }
+        },
+        "models.ReportPDFStatusResponse": {
+            "type": "object",
+            "properties": {
+                "report_pdf_url": {
+                    "type": "string",
+                    "example": "/api/boltpe-financial-planner/reports/20260709_120000_Ravi_Sharma_AI_Finance_Report.pdf"
+                },
+                "saved": {
+                    "type": "boolean",
+                    "example": true
+                }
+            }
+        },
+        "models.ReportScoreResponse": {
+            "type": "object",
+            "properties": {
+                "label": {
+                    "type": "string",
+                    "example": "Average"
+                },
+                "value": {
+                    "type": "integer",
+                    "example": 62
+                }
+            }
+        },
+        "models.SelectedGoalRequest": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "number",
+                    "example": 2500000,
+                    "minimum": 1e-06,
+                    "description": "Required. Goal amount must be greater than 0."
+                },
+                "categoryTitle": {
+                    "type": "string",
+                    "example": "Short Term Goals",
+                    "description": "Display category. Example: Instant Goals, Short Term Goals, Long Term Goals."
+                },
+                "customName": {
+                    "type": "string",
+                    "example": "",
+                    "description": "Required when key='others'; otherwise optional."
+                },
+                "key": {
+                    "type": "string",
+                    "example": "home_purchase",
+                    "enum": [
+                        "iphone",
+                        "playstation",
+                        "bike",
+                        "tv",
+                        "fridge",
+                        "washing_machine",
+                        "vacation",
+                        "others",
+                        "higher_education",
+                        "home_purchase",
+                        "car_purchase",
+                        "own_marriage",
+                        "retirement",
+                        "wealth"
+                    ],
+                    "description": "BoltPe Goal Master key. Must be unique in selected_goals_json."
+                },
+                "label": {
+                    "type": "string",
+                    "example": "Home Purchase / Home Upgrade",
+                    "description": "Must exactly match the selected Goal Master key label."
+                },
+                "months": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "Instant: 6-12. Short/Long: must be 0/omitted. Must agree with timeline text.",
+                    "example": 0,
+                    "maximum": 12
+                },
+                "timeline": {
+                    "type": "string",
+                    "example": "Within 5 years",
+                    "description": "Required display timeline and validated against type + numeric field. Instant: 6-12 Months and value must equal months. Short: 1-5 Years and value must equal years. Long: 20-25 Years and value must equal years. Wrong units, out-of-range values, or mismatches return HTTP 400 / VAL_001."
+                },
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "instant",
+                        "short",
+                        "long"
+                    ],
+                    "example": "short",
+                    "description": "Must match the Goal Master type for the selected key."
+                },
+                "years": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "Instant: must be 0/omitted. Short: 1-5. Long: 20-25. Must agree with timeline text.",
+                    "example": 5,
+                    "maximum": 25
+                }
+            },
+            "required": [
+                "key",
+                "label",
+                "type",
+                "timeline",
+                "amount"
+            ]
+        },
+        "models.StructuredJSONCompanyContact": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "company_name": {
+                    "type": "string"
+                },
+                "contact": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "website": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.StructuredJSONCustomer": {
+            "type": "object",
+            "properties": {
+                "age": {
+                    "type": "integer",
+                    "example": 26
+                },
+                "children_ages": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "children_count": {
+                    "type": "integer"
+                },
+                "city": {
+                    "type": "string",
+                    "example": "Pune"
+                },
+                "contact": {
+                    "type": "string",
+                    "example": "9876543210"
+                },
+                "dependents": {
+                    "type": "integer"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "tejas@example.com"
+                },
+                "full_name": {
+                    "type": "string",
+                    "example": "Tejas Jawale"
+                },
+                "life_stage": {
+                    "type": "string",
+                    "example": "Single"
+                },
+                "marital_status": {
+                    "type": "string"
+                },
+                "monthly_expenses": {
+                    "type": "number"
+                },
+                "monthly_income": {
+                    "type": "number"
+                },
+                "monthly_savings": {
+                    "type": "number"
+                },
+                "spouse_age": {
+                    "type": "integer"
+                },
+                "spouse_income": {
+                    "type": "number"
+                }
+            }
+        },
+        "models.StructuredJSONGoalAssumptions": {
+            "type": "object",
+            "properties": {
+                "Expected Return": {
+                    "type": "string"
+                },
+                "Inflation Used": {
+                    "type": "string"
+                },
+                "Planning Style": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.StructuredJSONGoalFeasibility": {
+            "type": "object",
+            "properties": {
+                "Boltpe Advisory Note": {
+                    "type": "string"
+                },
+                "Achievable Timeline With Current Savings": {
+                    "type": "string"
+                },
+                "Current Monthly Savings": {
+                    "type": "string"
+                },
+                "Extra Time Required": {
+                    "type": "string"
+                },
+                "Required Monthly Income To Keep Same Timeline": {
+                    "type": "string"
+                },
+                "Selected Timeline": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.StructuredJSONGoalReport": {
+            "type": "object",
+            "properties": {
+                "assumptions": {
+                    "$ref": "#/definitions/models.StructuredJSONGoalAssumptions"
+                },
+                "feasibility": {
+                    "$ref": "#/definitions/models.StructuredJSONGoalFeasibility"
+                },
+                "priority": {
+                    "type": "string"
+                },
+                "recommendations": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "sub_title": {
+                    "type": "string"
+                },
+                "summary": {
+                    "$ref": "#/definitions/models.StructuredJSONGoalSummary"
+                },
+                "summary_title": {
+                    "type": "string"
+                },
+                "table": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.StructuredJSONGoalTable"
+                    }
+                },
+                "title": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.StructuredJSONGoalSummary": {
+            "type": "object",
+            "properties": {
+                "Goal Name": {
+                    "type": "string"
+                },
+                "Goal Type": {
+                    "type": "string"
+                },
+                "Target Amount": {
+                    "type": "string"
+                },
+                "Target Horizon": {
+                    "type": "string"
+                },
+                "Timeline": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.StructuredJSONGoalTable": {
+            "type": "object",
+            "properties": {
+                "Future Corpus Needed": {
+                    "type": "string"
+                },
+                "Goal": {
+                    "type": "string"
+                },
+                "Goal Type": {
+                    "type": "string"
+                },
+                "Lumpsum Needed Today": {
+                    "type": "string"
+                },
+                "Monthly Saving / SIP Required": {
+                    "type": "string"
+                },
+                "Years / Months Left": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.StructuredJSONInsuranceInvestment": {
+            "type": "object",
+            "properties": {
+                "emergency_fund": {
+                    "type": "string"
+                },
+                "health_insurance": {
+                    "type": "string"
+                },
+                "investments": {
+                    "type": "string"
+                },
+                "life_insurance": {
+                    "type": "string"
+                },
+                "recommendations": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "subtitle": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.StructuredJSONReportData": {
+            "type": "object",
+            "properties": {
+                "common_recommendations": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "common_recommendations_subtitle": {
+                    "type": "string"
+                },
+                "common_recommendations_title": {
+                    "type": "string"
+                },
+                "company_contact": {
+                    "type": "object",
+                    "additionalProperties": true
+                },
+                "customer": {
+                    "type": "object",
+                    "additionalProperties": true
+                },
+                "generated_at": {
+                    "type": "string",
+                    "example": "21/07/2026 01:59 PM"
+                },
+                "goal_type_engine": {
+                    "type": "boolean"
+                },
+                "insurance_investment": {
+                    "type": "object",
+                    "additionalProperties": true
+                },
+                "priority_roadmap": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "reports": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.StructuredJSONGoalReport"
+                    }
+                },
+                "score": {
+                    "$ref": "#/definitions/models.StructuredJSONScore"
+                },
+                "summary": {
+                    "type": "object",
+                    "additionalProperties": true
+                }
+            }
+        },
+        "models.StructuredJSONReportResponse": {
+            "type": "object",
+            "properties": {
+                "api_version": {
+                    "type": "string",
+                    "example": "boltpe-json-v1"
+                },
+                "data": {
+                    "$ref": "#/definitions/models.StructuredJSONReportData"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Structured financial planner JSON generated successfully. No PDF generated by this endpoint."
+                },
+                "response_type": {
+                    "type": "string",
+                    "example": "structured_json"
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
+                }
+            }
+        },
+        "models.StructuredJSONScore": {
+            "type": "object",
+            "properties": {
+                "label": {
+                    "type": "string",
+                    "example": "High"
+                },
+                "value": {
+                    "type": "integer",
+                    "example": 84
+                }
+            }
+        },
+        "models.StructuredJSONSummary": {
+            "type": "object",
+            "properties": {
+                "current_monthly_expenses": {
+                    "type": "number"
+                },
+                "current_monthly_income": {
+                    "type": "number"
+                },
+                "current_monthly_savings": {
+                    "type": "number"
+                },
+                "financial_health": {
+                    "type": "string"
+                },
+                "planning_status": {
+                    "type": "string"
+                },
+                "total_future_corpus_needed": {
+                    "type": "string"
+                },
+                "total_goal_amount": {
+                    "type": "string"
+                },
+                "total_goals": {
+                    "type": "integer"
+                },
+                "total_lumpsum_needed_today": {
+                    "type": "string"
+                },
+                "total_monthly_sip_required": {
+                    "type": "string"
+                }
+            }
+        },
+        "routes.HealthResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Financial Planner Reports",
+            "description": "Generate structured plans and retrieve stored report metadata."
+        },
+        {
+            "name": "Reports",
+            "description": "Generate/download BoltPe financial planning reports and PDFs."
+        },
+        {
+            "name": "Email",
+            "description": "Inspect local SMTP configuration and send a test email."
+        },
+        {
+            "name": "Pages",
+            "description": "Application home, health and documentation endpoints."
+        }
+    ]
+}

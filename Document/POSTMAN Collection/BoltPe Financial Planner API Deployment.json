@@ -1,0 +1,464 @@
+{
+  "info": {
+    "name": "BoltPe Financial Planner API Deployment",
+    "description": "Postman collection for the BoltPe-owned Financial Planner engine. No Policy Planner runtime API is required.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Email",
+      "item": [
+        {
+          "name": "SMTP Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": {
+                "key": "token",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwOTgsIm1sbV9pZCI6bnVsbCwiZmlyc3RfbmFtZSI6IkJvbHRwZSIsImxhc3RfbmFtZSI6IlVzZXJfMTAwOTgiLCJ1c2VybmFtZSI6ImJvbHRwZV8xMDA5OCIsImVtYWlsIjpudWxsLCJtb2JpbGUiOiI5OTk5ODg3NjkwIiwicmVmZXJyZWRfYnkiOm51bGwsImNvdW50cnkiOm51bGwsInN0YXRlIjowLCJjaXJjbGUiOm51bGwsImRpc3RyaWN0IjpudWxsLCJkaXZpc2lvbiI6bnVsbCwicmVnaW9uIjpudWxsLCJibG9jayI6bnVsbCwicGluY29kZSI6bnVsbCwiYWRkcmVzcyI6bnVsbCwiZG9iIjpudWxsLCJpYXQiOjE3ODU0MzA3OTQsImV4cCI6MTc4ODAyMjc5NH0.atTp316tHTuKrmxjz9G16SCsNbwPy3B6V5yFDs9oh7I",
+                "type": "string"
+              }
+            },
+            "description": "Checks SMTP configuration/status.",
+            "url": {
+              "raw": "https://api-stage.boltpe.in/api/boltpe-financial-planner/smtp-status",
+              "protocol": "https",
+              "host": [
+                "api-stage",
+                "boltpe",
+                "in"
+              ],
+              "path": [
+                "api",
+                "boltpe-financial-planner",
+                "smtp-status"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "Test Email",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "disabled": false,
+                "type": "default"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": {
+                "key": "token",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwOTgsIm1sbV9pZCI6bnVsbCwiZmlyc3RfbmFtZSI6IkJvbHRwZSIsImxhc3RfbmFtZSI6IlVzZXJfMTAwOTgiLCJ1c2VybmFtZSI6ImJvbHRwZV8xMDA5OCIsImVtYWlsIjpudWxsLCJtb2JpbGUiOiI5OTk5ODg3NjkwIiwicmVmZXJyZWRfYnkiOm51bGwsImNvdW50cnkiOm51bGwsInN0YXRlIjowLCJjaXJjbGUiOm51bGwsImRpc3RyaWN0IjpudWxsLCJkaXZpc2lvbiI6bnVsbCwicmVnaW9uIjpudWxsLCJibG9jayI6bnVsbCwicGluY29kZSI6bnVsbCwiYWRkcmVzcyI6bnVsbCwiZG9iIjpudWxsLCJpYXQiOjE3ODU0MzA3OTQsImV4cCI6MTc4ODAyMjc5NH0.atTp316tHTuKrmxjz9G16SCsNbwPy3B6V5yFDs9oh7I",
+                "type": "string"
+              }
+            },
+            "description": "Tests email delivery. Adjust body if your local controller expects a different field.",
+            "url": {
+              "raw": "https://api-stage.boltpe.in/api/boltpe-financial-planner/test-email",
+              "protocol": "https",
+              "host": [
+                "api-stage",
+                "boltpe",
+                "in"
+              ],
+              "path": [
+                "api",
+                "boltpe-financial-planner",
+                "test-email"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"tejasjawale67@gmail.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Financial Planner",
+      "item": [
+        {
+          "name": "Generate Report JSON",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "disabled": false,
+                "type": "default"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": {
+                "key": "token",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwOTgsIm1sbV9pZCI6bnVsbCwiZmlyc3RfbmFtZSI6IkJvbHRwZSIsImxhc3RfbmFtZSI6IlVzZXJfMTAwOTgiLCJ1c2VybmFtZSI6ImJvbHRwZV8xMDA5OCIsImVtYWlsIjpudWxsLCJtb2JpbGUiOiI5OTk5ODg3NjkwIiwicmVmZXJyZWRfYnkiOm51bGwsImNvdW50cnkiOm51bGwsInN0YXRlIjowLCJjaXJjbGUiOm51bGwsImRpc3RyaWN0IjpudWxsLCJkaXZpc2lvbiI6bnVsbCwicmVnaW9uIjpudWxsLCJibG9jayI6bnVsbCwicGluY29kZSI6bnVsbCwiYWRkcmVzcyI6bnVsbCwiZG9iIjpudWxsLCJpYXQiOjE3ODU0MzA3OTQsImV4cCI6MTc4ODAyMjc5NH0.atTp316tHTuKrmxjz9G16SCsNbwPy3B6V5yFDs9oh7I",
+                "type": "string"
+              }
+            },
+            "description": "Runs validation and the BoltPe Planning Engine and returns structured JSON.",
+            "url": {
+              "raw": "https://api-stage.boltpe.in/api/boltpe-financial-planner/report-json",
+              "protocol": "https",
+              "host": [
+                "api-stage",
+                "boltpe",
+                "in"
+              ],
+              "path": [
+                "api",
+                "boltpe-financial-planner",
+                "report-json"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"goal_selection_mode\": \"create_your_own\",\n  \"full_name\": \"Tejas Jawale\",\n  \"contact\": \"7420871899\",\n  \"email\": \"tejasjawale67@gmail.com\",\n  \"dob\": \"1999-10-12\",\n  \"city\": \"Pune\",\n  \"marital_status\": \"married\",\n  \"spouse_dob\": \"2003-10-12\",\n  \"spouse_income\": 0,\n  \"children_count\": 1,\n  \"child_name\": \"Aarav\",\n  \"child_dob\": \"2023-08-05\",\n  \"dependents\": 0,\n  \"monthly_income\": 100000,\n  \"monthly_expenses\": 35000,\n  \"monthly_savings\": 55000,\n\n  \"risk_appetite\": \"medium\",\n  \"investment_experience\": \"Intermediate\",\n\n  \"existing_life_term\": true,\n  \"existing_life_term_cover\": 10000000,\n\n  \"existing_health\": true,\n  \"existing_health_cover\": 100000,\n\n  \"existing_critical\": true,\n  \"existing_critical_cover\": 100000,\n\n  \"existing_personal\": true,\n  \"existing_personal_cover\": 80000,\n\n  \"education_1_inflation\": 6,\n  \"education_1_lumpsum_return\": 11,\n  \"education_1_sip_return\": 11,\n  \"education_1_target_age\": 18,\n\n  \"marriage_1_inflation\": 6,\n  \"marriage_1_lumpsum_return\": 11,\n  \"marriage_1_sip_return\": 11,\n  \"marriage_1_target_age\": 25,\n\n  \"retirement_inflation\": 6,\n  \"retirement_pre_return\": 12,\n  \"retirement_post_return\": 7,\n\n  \"wealth_inflation\": 6,\n  \"wealth_lumpsum_return\": 12,\n  \"wealth_sip_return\": 12,\n\n  \"generic_goal_inflation\": 6,\n  \"generic_goal_lumpsum_return\": 10,\n  \"generic_goal_sip_return\": 10,\n\n  \"selected_goals_json\": [\n    {\n      \"key\": \"iphone\",\n      \"label\": \"iPhone\",\n      \"type\": \"instant\",\n      \"categoryTitle\": \"Instant Goals\",\n      \"timeline\": \"12 Months\",\n      \"amount\": 90000,\n      \"years\": 0,\n      \"months\": 12,\n      \"customName\": \"\"\n    },\n    {\n      \"key\": \"playstation\",\n      \"label\": \"PlayStation\",\n      \"type\": \"instant\",\n      \"categoryTitle\": \"Instant Goals\",\n      \"timeline\": \"10 Months\",\n      \"amount\": 60000,\n      \"years\": 0,\n      \"months\": 10,\n      \"customName\": \"\"\n    },\n    {\n      \"key\": \"bike\",\n      \"label\": \"Bike\",\n      \"type\": \"instant\",\n      \"categoryTitle\": \"Instant Goals\",\n      \"timeline\": \"12 Months\",\n      \"amount\": 150000,\n      \"years\": 0,\n      \"months\": 12,\n      \"customName\": \"\"\n    },\n    {\n      \"key\": \"tv\",\n      \"label\": \"TV\",\n      \"type\": \"instant\",\n      \"categoryTitle\": \"Instant Goals\",\n      \"timeline\": \"8 Months\",\n      \"amount\": 60000,\n      \"years\": 0,\n      \"months\": 8,\n      \"customName\": \"\"\n    },\n    {\n      \"key\": \"fridge\",\n      \"label\": \"Fridge\",\n      \"type\": \"instant\",\n      \"categoryTitle\": \"Instant Goals\",\n      \"timeline\": \"8 Months\",\n      \"amount\": 45000,\n      \"years\": 0,\n      \"months\": 8,\n      \"customName\": \"\"\n    },\n    {\n      \"key\": \"washing_machine\",\n      \"label\": \"Washing Machine\",\n      \"type\": \"instant\",\n      \"categoryTitle\": \"Instant Goals\",\n      \"timeline\": \"8 Months\",\n      \"amount\": 35000,\n      \"years\": 0,\n      \"months\": 8,\n      \"customName\": \"\"\n    },\n    {\n      \"key\": \"vacation\",\n      \"label\": \"Vacation Plan\",\n      \"type\": \"instant\",\n      \"categoryTitle\": \"Instant Goals\",\n      \"timeline\": \"12 Months\",\n      \"amount\": 150000,\n      \"years\": 0,\n      \"months\": 12,\n      \"customName\": \"\"\n    },\n    {\n      \"key\": \"others\",\n      \"label\": \"Others\",\n      \"type\": \"instant\",\n      \"categoryTitle\": \"Instant Goals\",\n      \"timeline\": \"12 Months\",\n      \"amount\": 100000,\n      \"years\": 0,\n      \"months\": 12,\n      \"customName\": \"Others\"\n    },\n    {\n      \"key\": \"higher_education\",\n      \"label\": \"Higher Education\",\n      \"type\": \"short\",\n      \"categoryTitle\": \"Short Term Goals\",\n      \"timeline\": \"Within 3 years\",\n      \"amount\": 500000,\n      \"years\": 3,\n      \"months\": 0,\n      \"customName\": \"\"\n    },\n    {\n      \"key\": \"home_purchase\",\n      \"label\": \"Home Purchase / Home Upgrade\",\n      \"type\": \"short\",\n      \"categoryTitle\": \"Short Term Goals\",\n      \"timeline\": \"Within 5 years\",\n      \"amount\": 2500000,\n      \"years\": 5,\n      \"months\": 0,\n      \"customName\": \"\"\n    },\n    {\n      \"key\": \"car_purchase\",\n      \"label\": \"Car Purchase\",\n      \"type\": \"short\",\n      \"categoryTitle\": \"Short Term Goals\",\n      \"timeline\": \"Within 3 years\",\n      \"amount\": 1000000,\n      \"years\": 3,\n      \"months\": 0,\n      \"customName\": \"\"\n    },\n    {\n      \"key\": \"own_marriage\",\n      \"label\": \"Own Marriage Planning\",\n      \"type\": \"short\",\n      \"categoryTitle\": \"Short Term Goals\",\n      \"timeline\": \"Within 5 years\",\n      \"amount\": 1500000,\n      \"years\": 5,\n      \"months\": 0,\n      \"customName\": \"\"\n    },\n    {\n      \"key\": \"retirement\",\n      \"label\": \"Retirement Planning\",\n      \"type\": \"long\",\n      \"categoryTitle\": \"Long Term Goals\",\n      \"timeline\": \"25 Years\",\n      \"amount\": 20000000,\n      \"years\": 25,\n      \"months\": 0,\n      \"customName\": \"\"\n    },\n    {\n      \"key\": \"wealth\",\n      \"label\": \"Wealth Creation\",\n      \"type\": \"long\",\n      \"categoryTitle\": \"Long Term Goals\",\n      \"timeline\": \"20 Years\",\n      \"amount\": 10000000,\n      \"years\": 20,\n      \"months\": 0,\n      \"customName\": \"\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Generate PDF Direct",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "disabled": false,
+                "type": "default"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": {
+                "key": "token",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwOTgsIm1sbV9pZCI6bnVsbCwiZmlyc3RfbmFtZSI6IkJvbHRwZSIsImxhc3RfbmFtZSI6IlVzZXJfMTAwOTgiLCJ1c2VybmFtZSI6ImJvbHRwZV8xMDA5OCIsImVtYWlsIjpudWxsLCJtb2JpbGUiOiI5OTk5ODg3NjkwIiwicmVmZXJyZWRfYnkiOm51bGwsImNvdW50cnkiOm51bGwsInN0YXRlIjowLCJjaXJjbGUiOm51bGwsImRpc3RyaWN0IjpudWxsLCJkaXZpc2lvbiI6bnVsbCwicmVnaW9uIjpudWxsLCJibG9jayI6bnVsbCwicGluY29kZSI6bnVsbCwiYWRkcmVzcyI6bnVsbCwiZG9iIjpudWxsLCJpYXQiOjE3ODU0MzA3OTQsImV4cCI6MTc4ODAyMjc5NH0.atTp316tHTuKrmxjz9G16SCsNbwPy3B6V5yFDs9oh7I",
+                "type": "string"
+              }
+            },
+            "description": "Generates and returns the BoltPe PDF directly.",
+            "url": {
+              "raw": "https://api-stage.boltpe.in/api/boltpe-financial-planner/report-pdf-direct",
+              "protocol": "https",
+              "host": [
+                "api-stage",
+                "boltpe",
+                "in"
+              ],
+              "path": [
+                "api",
+                "boltpe-financial-planner",
+                "report-pdf-direct"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"goal_selection_mode\": \"create_your_own\",\n  \"full_name\": \"Tejas Jawale\",\n  \"contact\": \"7420871899\",\n  \"email\": \"tejasjawale67@gmail.com\",\n  \"dob\": \"1999-10-12\",\n  \"city\": \"Pune\",\n  \"marital_status\": \"married\",\n  \"spouse_dob\": \"2003-10-12\",\n  \"spouse_income\": 0,\n  \"children_count\": 1,\n  \"child_name\": \"Aarav\",\n  \"child_dob\": \"2023-08-05\",\n  \"dependents\": 0,\n  \"monthly_income\": 100000,\n  \"monthly_expenses\": 35000,\n  \"monthly_savings\": 55000,\n\n  \"risk_appetite\": \"medium\",\n  \"investment_experience\": \"Intermediate\",\n\n  \"existing_life_term\": true,\n  \"existing_life_term_cover\": 10000000,\n\n  \"existing_health\": true,\n  \"existing_health_cover\": 100000,\n\n  \"existing_critical\": true,\n  \"existing_critical_cover\": 100000,\n\n  \"existing_personal\": true,\n  \"existing_personal_cover\": 80000,\n\n  \"education_1_inflation\": 6,\n  \"education_1_lumpsum_return\": 11,\n  \"education_1_sip_return\": 11,\n  \"education_1_target_age\": 18,\n\n  \"marriage_1_inflation\": 6,\n  \"marriage_1_lumpsum_return\": 11,\n  \"marriage_1_sip_return\": 11,\n  \"marriage_1_target_age\": 25,\n\n  \"retirement_inflation\": 6,\n  \"retirement_pre_return\": 12,\n  \"retirement_post_return\": 7,\n\n  \"wealth_inflation\": 6,\n  \"wealth_lumpsum_return\": 12,\n  \"wealth_sip_return\": 12,\n\n  \"generic_goal_inflation\": 6,\n  \"generic_goal_lumpsum_return\": 10,\n  \"generic_goal_sip_return\": 10,\n\n  \"selected_goals_json\": [\n    {\n      \"key\": \"iphone\",\n      \"label\": \"iPhone\",\n      \"type\": \"instant\",\n      \"categoryTitle\": \"Instant Goals\",\n      \"timeline\": \"12 Months\",\n      \"amount\": 90000,\n      \"years\": 0,\n      \"months\": 12,\n      \"customName\": \"\"\n    },\n    {\n      \"key\": \"playstation\",\n      \"label\": \"PlayStation\",\n      \"type\": \"instant\",\n      \"categoryTitle\": \"Instant Goals\",\n      \"timeline\": \"10 Months\",\n      \"amount\": 60000,\n      \"years\": 0,\n      \"months\": 10,\n      \"customName\": \"\"\n    },\n    {\n      \"key\": \"bike\",\n      \"label\": \"Bike\",\n      \"type\": \"instant\",\n      \"categoryTitle\": \"Instant Goals\",\n      \"timeline\": \"12 Months\",\n      \"amount\": 150000,\n      \"years\": 0,\n      \"months\": 12,\n      \"customName\": \"\"\n    },\n    {\n      \"key\": \"tv\",\n      \"label\": \"TV\",\n      \"type\": \"instant\",\n      \"categoryTitle\": \"Instant Goals\",\n      \"timeline\": \"8 Months\",\n      \"amount\": 60000,\n      \"years\": 0,\n      \"months\": 8,\n      \"customName\": \"\"\n    },\n    {\n      \"key\": \"fridge\",\n      \"label\": \"Fridge\",\n      \"type\": \"instant\",\n      \"categoryTitle\": \"Instant Goals\",\n      \"timeline\": \"8 Months\",\n      \"amount\": 45000,\n      \"years\": 0,\n      \"months\": 8,\n      \"customName\": \"\"\n    },\n    {\n      \"key\": \"washing_machine\",\n      \"label\": \"Washing Machine\",\n      \"type\": \"instant\",\n      \"categoryTitle\": \"Instant Goals\",\n      \"timeline\": \"8 Months\",\n      \"amount\": 35000,\n      \"years\": 0,\n      \"months\": 8,\n      \"customName\": \"\"\n    },\n    {\n      \"key\": \"vacation\",\n      \"label\": \"Vacation Plan\",\n      \"type\": \"instant\",\n      \"categoryTitle\": \"Instant Goals\",\n      \"timeline\": \"12 Months\",\n      \"amount\": 150000,\n      \"years\": 0,\n      \"months\": 12,\n      \"customName\": \"\"\n    },\n    {\n      \"key\": \"others\",\n      \"label\": \"Others\",\n      \"type\": \"instant\",\n      \"categoryTitle\": \"Instant Goals\",\n      \"timeline\": \"12 Months\",\n      \"amount\": 100000,\n      \"years\": 0,\n      \"months\": 12,\n      \"customName\": \"Others\"\n    },\n    {\n      \"key\": \"higher_education\",\n      \"label\": \"Higher Education\",\n      \"type\": \"short\",\n      \"categoryTitle\": \"Short Term Goals\",\n      \"timeline\": \"Within 3 years\",\n      \"amount\": 500000,\n      \"years\": 3,\n      \"months\": 0,\n      \"customName\": \"\"\n    },\n    {\n      \"key\": \"home_purchase\",\n      \"label\": \"Home Purchase / Home Upgrade\",\n      \"type\": \"short\",\n      \"categoryTitle\": \"Short Term Goals\",\n      \"timeline\": \"Within 5 years\",\n      \"amount\": 2500000,\n      \"years\": 5,\n      \"months\": 0,\n      \"customName\": \"\"\n    },\n    {\n      \"key\": \"car_purchase\",\n      \"label\": \"Car Purchase\",\n      \"type\": \"short\",\n      \"categoryTitle\": \"Short Term Goals\",\n      \"timeline\": \"Within 3 years\",\n      \"amount\": 1000000,\n      \"years\": 3,\n      \"months\": 0,\n      \"customName\": \"\"\n    },\n    {\n      \"key\": \"own_marriage\",\n      \"label\": \"Own Marriage Planning\",\n      \"type\": \"short\",\n      \"categoryTitle\": \"Short Term Goals\",\n      \"timeline\": \"Within 5 years\",\n      \"amount\": 1500000,\n      \"years\": 5,\n      \"months\": 0,\n      \"customName\": \"\"\n    },\n    {\n      \"key\": \"retirement\",\n      \"label\": \"Retirement Planning\",\n      \"type\": \"long\",\n      \"categoryTitle\": \"Long Term Goals\",\n      \"timeline\": \"25 Years\",\n      \"amount\": 20000000,\n      \"years\": 25,\n      \"months\": 0,\n      \"customName\": \"\"\n    },\n    {\n      \"key\": \"wealth\",\n      \"label\": \"Wealth Creation\",\n      \"type\": \"long\",\n      \"categoryTitle\": \"Long Term Goals\",\n      \"timeline\": \"20 Years\",\n      \"amount\": 10000000,\n      \"years\": 20,\n      \"months\": 0,\n      \"customName\": \"\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Generate Report",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "disabled": false,
+                "type": "default"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": {
+                "key": "token",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwOTgsIm1sbV9pZCI6bnVsbCwiZmlyc3RfbmFtZSI6IkJvbHRwZSIsImxhc3RfbmFtZSI6IlVzZXJfMTAwOTgiLCJ1c2VybmFtZSI6ImJvbHRwZV8xMDA5OCIsImVtYWlsIjpudWxsLCJtb2JpbGUiOiI5OTk5ODg3NjkwIiwicmVmZXJyZWRfYnkiOm51bGwsImNvdW50cnkiOm51bGwsInN0YXRlIjowLCJjaXJjbGUiOm51bGwsImRpc3RyaWN0IjpudWxsLCJkaXZpc2lvbiI6bnVsbCwicmVnaW9uIjpudWxsLCJibG9jayI6bnVsbCwicGluY29kZSI6bnVsbCwiYWRkcmVzcyI6bnVsbCwiZG9iIjpudWxsLCJpYXQiOjE3ODU0MzA3OTQsImV4cCI6MTc4ODAyMjc5NH0.atTp316tHTuKrmxjz9G16SCsNbwPy3B6V5yFDs9oh7I",
+                "type": "string"
+              }
+            },
+            "description": "Runs the report generation flow.",
+            "url": {
+              "raw": "https://api-stage.boltpe.in/api/boltpe-financial-planner/report",
+              "protocol": "https",
+              "host": [
+                "api-stage",
+                "boltpe",
+                "in"
+              ],
+              "path": [
+                "api",
+                "boltpe-financial-planner",
+                "report"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"goal_selection_mode\": \"create_your_own\",\n  \"full_name\": \"Tejas Jawale\",\n  \"contact\": \"7420871899\",\n  \"email\": \"tejasjawale67@gmail.com\",\n  \"dob\": \"1999-10-12\",\n  \"city\": \"Pune\",\n  \"marital_status\": \"married\",\n  \"spouse_dob\": \"2003-10-12\",\n  \"spouse_income\": 0,\n  \"children_count\": 1,\n  \"child_name\": \"Aarav\",\n  \"child_dob\": \"2023-08-05\",\n  \"dependents\": 0,\n  \"monthly_income\": 100000,\n  \"monthly_expenses\": 35000,\n  \"monthly_savings\": 55000,\n\n  \"risk_appetite\": \"medium\",\n  \"investment_experience\": \"Intermediate\",\n\n  \"existing_life_term\": true,\n  \"existing_life_term_cover\": 10000000,\n\n  \"existing_health\": true,\n  \"existing_health_cover\": 100000,\n\n  \"existing_critical\": true,\n  \"existing_critical_cover\": 100000,\n\n  \"existing_personal\": true,\n  \"existing_personal_cover\": 80000,\n\n  \"education_1_inflation\": 6,\n  \"education_1_lumpsum_return\": 11,\n  \"education_1_sip_return\": 11,\n  \"education_1_target_age\": 18,\n\n  \"marriage_1_inflation\": 6,\n  \"marriage_1_lumpsum_return\": 11,\n  \"marriage_1_sip_return\": 11,\n  \"marriage_1_target_age\": 25,\n\n  \"retirement_inflation\": 6,\n  \"retirement_pre_return\": 12,\n  \"retirement_post_return\": 7,\n\n  \"wealth_inflation\": 6,\n  \"wealth_lumpsum_return\": 12,\n  \"wealth_sip_return\": 12,\n\n  \"generic_goal_inflation\": 6,\n  \"generic_goal_lumpsum_return\": 10,\n  \"generic_goal_sip_return\": 10,\n\n  \"selected_goals_json\": [\n    {\n      \"key\": \"iphone\",\n      \"label\": \"iPhone\",\n      \"type\": \"instant\",\n      \"categoryTitle\": \"Instant Goals\",\n      \"timeline\": \"12 Months\",\n      \"amount\": 90000,\n      \"years\": 0,\n      \"months\": 12,\n      \"customName\": \"\"\n    },\n    {\n      \"key\": \"playstation\",\n      \"label\": \"PlayStation\",\n      \"type\": \"instant\",\n      \"categoryTitle\": \"Instant Goals\",\n      \"timeline\": \"10 Months\",\n      \"amount\": 60000,\n      \"years\": 0,\n      \"months\": 10,\n      \"customName\": \"\"\n    },\n    {\n      \"key\": \"bike\",\n      \"label\": \"Bike\",\n      \"type\": \"instant\",\n      \"categoryTitle\": \"Instant Goals\",\n      \"timeline\": \"12 Months\",\n      \"amount\": 150000,\n      \"years\": 0,\n      \"months\": 12,\n      \"customName\": \"\"\n    },\n    {\n      \"key\": \"tv\",\n      \"label\": \"TV\",\n      \"type\": \"instant\",\n      \"categoryTitle\": \"Instant Goals\",\n      \"timeline\": \"8 Months\",\n      \"amount\": 60000,\n      \"years\": 0,\n      \"months\": 8,\n      \"customName\": \"\"\n    },\n    {\n      \"key\": \"fridge\",\n      \"label\": \"Fridge\",\n      \"type\": \"instant\",\n      \"categoryTitle\": \"Instant Goals\",\n      \"timeline\": \"8 Months\",\n      \"amount\": 45000,\n      \"years\": 0,\n      \"months\": 8,\n      \"customName\": \"\"\n    },\n    {\n      \"key\": \"washing_machine\",\n      \"label\": \"Washing Machine\",\n      \"type\": \"instant\",\n      \"categoryTitle\": \"Instant Goals\",\n      \"timeline\": \"8 Months\",\n      \"amount\": 35000,\n      \"years\": 0,\n      \"months\": 8,\n      \"customName\": \"\"\n    },\n    {\n      \"key\": \"vacation\",\n      \"label\": \"Vacation Plan\",\n      \"type\": \"instant\",\n      \"categoryTitle\": \"Instant Goals\",\n      \"timeline\": \"12 Months\",\n      \"amount\": 150000,\n      \"years\": 0,\n      \"months\": 12,\n      \"customName\": \"\"\n    },\n    {\n      \"key\": \"others\",\n      \"label\": \"Others\",\n      \"type\": \"instant\",\n      \"categoryTitle\": \"Instant Goals\",\n      \"timeline\": \"12 Months\",\n      \"amount\": 100000,\n      \"years\": 0,\n      \"months\": 12,\n      \"customName\": \"Others\"\n    },\n    {\n      \"key\": \"higher_education\",\n      \"label\": \"Higher Education\",\n      \"type\": \"short\",\n      \"categoryTitle\": \"Short Term Goals\",\n      \"timeline\": \"Within 3 years\",\n      \"amount\": 500000,\n      \"years\": 3,\n      \"months\": 0,\n      \"customName\": \"\"\n    },\n    {\n      \"key\": \"home_purchase\",\n      \"label\": \"Home Purchase / Home Upgrade\",\n      \"type\": \"short\",\n      \"categoryTitle\": \"Short Term Goals\",\n      \"timeline\": \"Within 5 years\",\n      \"amount\": 2500000,\n      \"years\": 5,\n      \"months\": 0,\n      \"customName\": \"\"\n    },\n    {\n      \"key\": \"car_purchase\",\n      \"label\": \"Car Purchase\",\n      \"type\": \"short\",\n      \"categoryTitle\": \"Short Term Goals\",\n      \"timeline\": \"Within 3 years\",\n      \"amount\": 1000000,\n      \"years\": 3,\n      \"months\": 0,\n      \"customName\": \"\"\n    },\n    {\n      \"key\": \"own_marriage\",\n      \"label\": \"Own Marriage Planning\",\n      \"type\": \"short\",\n      \"categoryTitle\": \"Short Term Goals\",\n      \"timeline\": \"Within 5 years\",\n      \"amount\": 1500000,\n      \"years\": 5,\n      \"months\": 0,\n      \"customName\": \"\"\n    },\n    {\n      \"key\": \"retirement\",\n      \"label\": \"Retirement Planning\",\n      \"type\": \"long\",\n      \"categoryTitle\": \"Long Term Goals\",\n      \"timeline\": \"25 Years\",\n      \"amount\": 20000000,\n      \"years\": 25,\n      \"months\": 0,\n      \"customName\": \"\"\n    },\n    {\n      \"key\": \"wealth\",\n      \"label\": \"Wealth Creation\",\n      \"type\": \"long\",\n      \"categoryTitle\": \"Long Term Goals\",\n      \"timeline\": \"20 Years\",\n      \"amount\": 10000000,\n      \"years\": 20,\n      \"months\": 0,\n      \"customName\": \"\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "List Reports",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": {
+                "key": "token",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwOTgsIm1sbV9pZCI6bnVsbCwiZmlyc3RfbmFtZSI6IkJvbHRwZSIsImxhc3RfbmFtZSI6IlVzZXJfMTAwOTgiLCJ1c2VybmFtZSI6ImJvbHRwZV8xMDA5OCIsImVtYWlsIjpudWxsLCJtb2JpbGUiOiI5OTk5ODg3NjkwIiwicmVmZXJyZWRfYnkiOm51bGwsImNvdW50cnkiOm51bGwsInN0YXRlIjowLCJjaXJjbGUiOm51bGwsImRpc3RyaWN0IjpudWxsLCJkaXZpc2lvbiI6bnVsbCwicmVnaW9uIjpudWxsLCJibG9jayI6bnVsbCwicGluY29kZSI6bnVsbCwiYWRkcmVzcyI6bnVsbCwiZG9iIjpudWxsLCJpYXQiOjE3ODU0MzA3OTQsImV4cCI6MTc4ODAyMjc5NH0.atTp316tHTuKrmxjz9G16SCsNbwPy3B6V5yFDs9oh7I",
+                "type": "string"
+              }
+            },
+            "description": "Lists stored financial planner reports.",
+            "url": {
+              "raw": "https://api-stage.boltpe.in/api/boltpe-financial-planner/reports",
+              "protocol": "https",
+              "host": [
+                "api-stage",
+                "boltpe",
+                "in"
+              ],
+              "path": [
+                "api",
+                "boltpe-financial-planner",
+                "reports"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "Download Signed Report",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "Use the signed path/parameters returned by the report listing/generation flow.",
+            "url": {
+              "raw": "https://financial-planning.boltpe.in/api/boltpe-financial-planner/reports/{{report_path}}?expires={{expires}}&signature={{signature}}",
+              "protocol": "https",
+              "host": [
+                "financial-planning",
+                "boltpe",
+                "in"
+              ],
+              "path": [
+                "api",
+                "boltpe-financial-planner",
+                "reports",
+                "{{report_path}}"
+              ],
+              "query": [
+                {
+                  "key": "expires",
+                  "value": "{{expires}}"
+                },
+                {
+                  "key": "signature",
+                  "value": "{{signature}}"
+                }
+              ],
+              "variable": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Utility & Documentation",
+      "item": [
+        {
+          "name": "Service Home",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": {
+                "key": "token",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwOTgsIm1sbV9pZCI6bnVsbCwiZmlyc3RfbmFtZSI6IkJvbHRwZSIsImxhc3RfbmFtZSI6IlVzZXJfMTAwOTgiLCJ1c2VybmFtZSI6ImJvbHRwZV8xMDA5OCIsImVtYWlsIjpudWxsLCJtb2JpbGUiOiI5OTk5ODg3NjkwIiwicmVmZXJyZWRfYnkiOm51bGwsImNvdW50cnkiOm51bGwsInN0YXRlIjowLCJjaXJjbGUiOm51bGwsImRpc3RyaWN0IjpudWxsLCJkaXZpc2lvbiI6bnVsbCwicmVnaW9uIjpudWxsLCJibG9jayI6bnVsbCwicGluY29kZSI6bnVsbCwiYWRkcmVzcyI6bnVsbCwiZG9iIjpudWxsLCJpYXQiOjE3ODU0MzA3OTQsImV4cCI6MTc4ODAyMjc5NH0.atTp316tHTuKrmxjz9G16SCsNbwPy3B6V5yFDs9oh7I",
+                "type": "string"
+              }
+            },
+            "description": "",
+            "url": {
+              "raw": "https://api-stage.boltpe.in/boltpe-financial-planner/",
+              "protocol": "https",
+              "host": [
+                "api-stage",
+                "boltpe",
+                "in"
+              ],
+              "path": [
+                "boltpe-financial-planner",
+                ""
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": {
+                "key": "token",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwOTgsIm1sbV9pZCI6bnVsbCwiZmlyc3RfbmFtZSI6IkJvbHRwZSIsImxhc3RfbmFtZSI6IlVzZXJfMTAwOTgiLCJ1c2VybmFtZSI6ImJvbHRwZV8xMDA5OCIsImVtYWlsIjpudWxsLCJtb2JpbGUiOiI5OTk5ODg3NjkwIiwicmVmZXJyZWRfYnkiOm51bGwsImNvdW50cnkiOm51bGwsInN0YXRlIjowLCJjaXJjbGUiOm51bGwsImRpc3RyaWN0IjpudWxsLCJkaXZpc2lvbiI6bnVsbCwicmVnaW9uIjpudWxsLCJibG9jayI6bnVsbCwicGluY29kZSI6bnVsbCwiYWRkcmVzcyI6bnVsbCwiZG9iIjpudWxsLCJpYXQiOjE3ODU0MzA3OTQsImV4cCI6MTc4ODAyMjc5NH0.atTp316tHTuKrmxjz9G16SCsNbwPy3B6V5yFDs9oh7I",
+                "type": "string"
+              }
+            },
+            "description": "",
+            "url": {
+              "raw": "https://api-stage.boltpe.in/boltpe-financial-planner/health",
+              "protocol": "https",
+              "host": [
+                "api-stage",
+                "boltpe",
+                "in"
+              ],
+              "path": [
+                "boltpe-financial-planner",
+                "health"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "Swagger UI",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": {
+                "key": "token",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwOTgsIm1sbV9pZCI6bnVsbCwiZmlyc3RfbmFtZSI6IkJvbHRwZSIsImxhc3RfbmFtZSI6IlVzZXJfMTAwOTgiLCJ1c2VybmFtZSI6ImJvbHRwZV8xMDA5OCIsImVtYWlsIjpudWxsLCJtb2JpbGUiOiI5OTk5ODg3NjkwIiwicmVmZXJyZWRfYnkiOm51bGwsImNvdW50cnkiOm51bGwsInN0YXRlIjowLCJjaXJjbGUiOm51bGwsImRpc3RyaWN0IjpudWxsLCJkaXZpc2lvbiI6bnVsbCwicmVnaW9uIjpudWxsLCJibG9jayI6bnVsbCwicGluY29kZSI6bnVsbCwiYWRkcmVzcyI6bnVsbCwiZG9iIjpudWxsLCJpYXQiOjE3ODU0MzA3OTQsImV4cCI6MTc4ODAyMjc5NH0.atTp316tHTuKrmxjz9G16SCsNbwPy3B6V5yFDs9oh7I",
+                "type": "string"
+              }
+            },
+            "description": "",
+            "url": {
+              "raw": "https://api-stage.boltpe.in/financial-planner/apidocs/index.html",
+              "protocol": "https",
+              "host": [
+                "api-stage",
+                "boltpe",
+                "in"
+              ],
+              "path": [
+                "financial-planner",
+                "apidocs",
+                "index.html"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        },
+        {
+          "name": "OpenAPI JSON",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": {
+                "key": "token",
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTAwOTgsIm1sbV9pZCI6bnVsbCwiZmlyc3RfbmFtZSI6IkJvbHRwZSIsImxhc3RfbmFtZSI6IlVzZXJfMTAwOTgiLCJ1c2VybmFtZSI6ImJvbHRwZV8xMDA5OCIsImVtYWlsIjpudWxsLCJtb2JpbGUiOiI5OTk5ODg3NjkwIiwicmVmZXJyZWRfYnkiOm51bGwsImNvdW50cnkiOm51bGwsInN0YXRlIjowLCJjaXJjbGUiOm51bGwsImRpc3RyaWN0IjpudWxsLCJkaXZpc2lvbiI6bnVsbCwicmVnaW9uIjpudWxsLCJibG9jayI6bnVsbCwicGluY29kZSI6bnVsbCwiYWRkcmVzcyI6bnVsbCwiZG9iIjpudWxsLCJpYXQiOjE3ODU0MzA3OTQsImV4cCI6MTc4ODAyMjc5NH0.atTp316tHTuKrmxjz9G16SCsNbwPy3B6V5yFDs9oh7I",
+                "type": "string"
+              }
+            },
+            "description": "",
+            "url": {
+              "raw": "https://api-stage.boltpe.in/boltpe-financial-planner/openapi.json",
+              "protocol": "https",
+              "host": [
+                "api-stage",
+                "boltpe",
+                "in"
+              ],
+              "path": [
+                "boltpe-financial-planner",
+                "openapi.json"
+              ],
+              "query": [],
+              "variable": []
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://financial-planning.boltpe.in",
+      "type": "default"
+    },
+    {
+      "key": "report_path",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "expires",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "signature",
+      "value": "",
+      "type": "default"
+    }
+  ]
+}
